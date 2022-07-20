@@ -4,12 +4,15 @@ import reviewModel from "../models/review.js"
 import errors from "../errorHandlers/error.js"
 import wrapAsync from "../errorHandlers/asyncError.js"
 import validSchemas from "../validationSchemas.js"
+import middleware from "../middleware.js"
+
 const require = createRequire(import.meta.url)
 
 const express = require('express')
 const Ad = models.Ad
 const Review = reviewModel.Review
 const AppError = errors.AppError
+const isLoggedin = middleware.isLoggedin
 const reviewSchema = validSchemas.reviewSchema
 const flash = require('connect-flash')
 
@@ -27,7 +30,7 @@ const validateReview = (req, res, next) => {
 
 // show reviews
 
-reviewRouter.post('/show/:id/reviews', validateReview, wrapAsync(async (req, res, next) => {
+reviewRouter.post('/show/:id/reviews', isLoggedin, validateReview, wrapAsync(async (req, res, next) => {
     const id = req.params.id
     const data = await Ad.findById(id)
     const review = await Review(req.body.review)

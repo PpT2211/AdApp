@@ -7,37 +7,27 @@ import passport from 'passport'
 const require = createRequire(import.meta.url)
 
 const express = require('express')
-const flash = require('connect-flash')
-const session = require('express-session')
 
 const User = userModel.User
-const AppError = errors.AppError
-const adSchema = validSchemas.adSchema
-const sessionOptions = {secret:'heylo', resave:false, saveUninitialized:false}
 const userRouter = express.Router()
 
+var destinationUrl;
 
-userRouter.use(session(sessionOptions))
-
-const requireLogin = (req, res, next) => {
-    if (!req.session.user_id) {
-        return res.redirect('/login')
-    }
-    next();
-}
 
 userRouter.get("/register", (req,res)=>{
     res.render("auth/register")
 })
 
-userRouter.post("/register", wrapAsync(async (req,res)=>{
+userRouter.post("/register", wrapAsync(async (req,res, next)=>{
     try {
         const {username, email, age , password} = req.body
         const user = new User({ email, age, username })
         const newUser = await User.register(user, password)
-        req.session.user_id = newUser._id
-        req.flash('success','Welcome to AdApp!')
-        res.redirect("/ad/allAds")
+        req.login(newUser, err => {
+            if(err) return next(err)
+            req.flash('success','Welcome to AdApp!')
+            res.redirect("/ad/allAds")
+        })
     } catch (e) {
         req.flash('error',e.message)
         res.redirect("/register")
@@ -47,23 +37,22 @@ userRouter.post("/register", wrapAsync(async (req,res)=>{
 
 userRouter.get("/login", (req,res)=>{
     res.render("auth/login")
+    destinationUrl = req.session.destination || "/ad/allAds"
+    console.log(destinationUrl)
 })
 
-userRouter.post("/login", passport.authenticate('local',{ failureFlash: true, failureRedirect: '/login' }),wrapAsync(async (req,res)=>{
-    const { username, password } = req.body;
-    // const foundUser = await User.findAndValidate(username, password);
-    // if (foundUser) {
-    //     req.session.user_id = foundUser._id;
-    req.flash('success',`Welcome back ${username}!`)
-    res.redirect("/ad/allAds")
-    // }
-}))
+userRouter.post("/login", passport.authenticate('local',{ failureFlash: true, failureRedirect: '/login' }),(req,res)=>{
+    res.redirect(destinationUrl)
+})
 
 userRouter.get('/logout', (req, res) => {
-    req.flash('success','Successfully logged out!')
-    res.redirect("/ad/allAds");
-    req.session.user_id = null;
-    req.session.destroy();
+    req.logout(function(err){
+        if(err){ 
+            return next(err)
+        }
+        req.flash('success','Successfully logged out!')
+        res.redirect("/ad/allAds");
+    })
 })
 
 export default userRouter

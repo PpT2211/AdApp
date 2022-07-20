@@ -3,6 +3,7 @@ import models from "../models/advertisement.js"
 import errors from "../errorHandlers/error.js"
 import wrapAsync from '../errorHandlers/asyncError.js'
 import validSchemas from "../validationSchemas.js"
+import middleware from "../middleware.js"
 const require = createRequire(import.meta.url)
 
 const express = require('express')
@@ -12,7 +13,7 @@ const session = require('express-session')
 const Ad = models.Ad
 const AppError = errors.AppError
 const adSchema = validSchemas.adSchema
-// const sessionOptions = {secret:'heylo', resave:false, saveUninitialized:false} 
+const isLoggedin = middleware.isLoggedin
 const adRouter = express.Router()
 
 const validateAd = (req, res, next) => {
@@ -29,6 +30,9 @@ const validateAd = (req, res, next) => {
 
 adRouter.get('/allAds', wrapAsync(async (req, res, next) => {
     const data = await Ad.find({})
+    console.log("============================")
+    console.log(req.session)
+    console.log("============================")
     if (data) {
         res.render('home', { ad: data })
     } else {
@@ -38,16 +42,11 @@ adRouter.get('/allAds', wrapAsync(async (req, res, next) => {
 
 // add new Ad
 
-adRouter.get('/addAd', wrapAsync(async (req, res, next) => {
-    if(!req.isAuthenticated()){
-        req.flash('error','You need to be signed in')
-        res.redirect('/login')
-    }else{
-        res.render('new')
-    }
+adRouter.get('/addAd', isLoggedin, wrapAsync(async (req, res, next) => {
+    res.render('new')
 }))
 
-adRouter.post('/addAd', validateAd, wrapAsync(async (req, res, next) => {
+adRouter.post('/addAd', isLoggedin, validateAd, wrapAsync(async (req, res, next) => {
     const data = new Ad(req.body)
     await data.save()
     req.flash('success', 'Successfully made an Ad!')
@@ -60,7 +59,7 @@ adRouter.get('/show/:id', wrapAsync(async (req, res, next) => {
     const data = await Ad.findById(req.params.id).populate('reviews')
     if (!data) {
         req.flash('error','Cannot find the Ad you requested for')
-        return res.redirect('/')
+        return res.redirect('/ad/allAds')
     }
     res.render('ads/show', { a: data })
 
@@ -68,7 +67,7 @@ adRouter.get('/show/:id', wrapAsync(async (req, res, next) => {
 
 // edit/update a specific Ad
 
-adRouter.get('/edit/:id', wrapAsync(async (req, res, next) => {
+adRouter.get('/edit/:id', isLoggedin, wrapAsync(async (req, res, next) => {
     const data = await Ad.findById(req.params.id)
     if (!data) {
         throw new AppError(404, "Data requested doesn't exist")
@@ -76,7 +75,7 @@ adRouter.get('/edit/:id', wrapAsync(async (req, res, next) => {
     res.render('ads/edit', { a: data })
 }))
 
-adRouter.put('/edit/:id', validateAd, wrapAsync(async (req, res, next) => {
+adRouter.put('/edit/:id', isLoggedin, validateAd, wrapAsync(async (req, res, next) => {
     const updatedData = req.body
     const data = await Ad.findByIdAndUpdate(req.params.id, updatedData, { runValidators: true, new: true })
     req.flash('success','Successfully updated an Ad!')
@@ -86,7 +85,7 @@ adRouter.put('/edit/:id', validateAd, wrapAsync(async (req, res, next) => {
 
 // delete Ad
 
-adRouter.delete('/delete/:id', wrapAsync(async (req, res, next) => {
+adRouter.delete('/delete/:id', isLoggedin, wrapAsync(async (req, res, next) => {
 
     const data = await Ad.findByIdAndDelete(req.params.id)
     if (!data) {
