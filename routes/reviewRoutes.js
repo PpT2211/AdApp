@@ -37,7 +37,6 @@ reviewRouter.post('/show/:id/reviews', isLoggedin, validateReview, wrapAsync(asy
     data.reviews.push(review)
     await review.save()
     await data.save()
-    console.log(data)
     req.flash('success','Successfully added a review!')
     res.redirect(`/ad/show/${id}`)
 }))
@@ -46,7 +45,7 @@ reviewRouter.post('/show/:id/reviews', isLoggedin, validateReview, wrapAsync(asy
 
 reviewRouter.delete('/show/:id/reviews/:reviewId', wrapAsync(async(req,res,next)=>{
     const { id, reviewId } = req.params
-    await Ad.findByIdAndUpdate(id, {$pull: reviewId})
+    await Ad.findByIdAndUpdate(id, {$pull: { reviews: reviewId }})
     await Review.findByIdAndDelete(reviewId)
     req.flash('success','Successfully deleted a review!')
     res.redirect(`/ad/show/${id}`)

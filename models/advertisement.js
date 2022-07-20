@@ -1,8 +1,10 @@
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
 import reviewModel from './review.js'
+import userModel from './user.js'
 const mongoose = require('mongoose')
 const Review = reviewModel.Review
+const User = userModel.User
 const Schema = mongoose.Schema
 
 const adSchema = new Schema({
@@ -22,13 +24,13 @@ const adSchema = new Schema({
         type: String,
         required: [true, "Where do you live? Just city is enough. Don't be shy to tell."]
     },
-    publisher: {
-        type: String,
-        required: [true, 'Few people are afraid of ghosts. So, it would be nice if you tell us your name']
-    },
     link: {
         type: String,
         required: [true, 'Where should we go to get your amazing product?']
+    },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: User
     },
     reviews: [
         {

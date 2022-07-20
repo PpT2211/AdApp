@@ -30,9 +30,6 @@ const validateAd = (req, res, next) => {
 
 adRouter.get('/allAds', wrapAsync(async (req, res, next) => {
     const data = await Ad.find({})
-    console.log("============================")
-    console.log(req.session)
-    console.log("============================")
     if (data) {
         res.render('home', { ad: data })
     } else {
@@ -47,7 +44,8 @@ adRouter.get('/addAd', isLoggedin, wrapAsync(async (req, res, next) => {
 }))
 
 adRouter.post('/addAd', isLoggedin, validateAd, wrapAsync(async (req, res, next) => {
-    const data = new Ad(req.body)
+    const {title,image,description,location,link } = req.body
+    const data = new Ad({title,image,description,location,link, author:res.locals.currentUser._id})
     await data.save()
     req.flash('success', 'Successfully made an Ad!')
     res.redirect('/ad/allAds')
@@ -56,7 +54,7 @@ adRouter.post('/addAd', isLoggedin, validateAd, wrapAsync(async (req, res, next)
 // show a specific Ad
 
 adRouter.get('/show/:id', wrapAsync(async (req, res, next) => {
-    const data = await Ad.findById(req.params.id).populate('reviews')
+    const data = await Ad.findById(req.params.id).populate('reviews').populate('author')
     if (!data) {
         req.flash('error','Cannot find the Ad you requested for')
         return res.redirect('/ad/allAds')

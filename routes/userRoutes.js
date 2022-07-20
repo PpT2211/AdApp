@@ -38,7 +38,6 @@ userRouter.post("/register", wrapAsync(async (req,res, next)=>{
 userRouter.get("/login", (req,res)=>{
     res.render("auth/login")
     destinationUrl = req.session.destination || "/ad/allAds"
-    console.log(destinationUrl)
 })
 
 userRouter.post("/login", passport.authenticate('local',{ failureFlash: true, failureRedirect: '/login' }),(req,res)=>{

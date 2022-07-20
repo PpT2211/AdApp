@@ -6,7 +6,6 @@ const adSchema = Joi.object({
     image: Joi.string().required(),
     description: Joi.string().required(),
     location: Joi.string().required(),
-    publisher: Joi.string().required(),
     link: Joi.string().required()
 })
 const reviewSchema = Joi.object({
