@@ -1,0 +1,88 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <button type="button" class="me-auto btn btn-dark" onclick="history.back()">Back</button>
+        </div>
+        <h1 class="text-center">New Ad Form</h1>
+        <br>
+        <div class="col-6 offset-3">
+
+            <form action="/ad/addAd" novalidate class="needs-validation" method="post">
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" name="title" id="title" placeholder="title" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please tell us what this is.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image url</label>
+                    <input type="text" class="form-control" name="image" id="image" placeholder="Image Url" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please tell us how it looks.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea type="text" class="form-control" name="description" id="description"
+                        placeholder="description" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please tell us more about this.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" class="form-control" name="location" id="location" placeholder="location"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please tell us where you are.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="publisher" class="form-label">Publisher</label>
+                    <input type="text" class="form-control" name="publisher" id="publisher" placeholder="publisher"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please tell us who you are.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="link" class="form-label">Store Link</label>
+                    <input type="text" class="form-control" name="link" id="link" placeholder="link" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please tell us where to buy this.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <input class="btn btn-success" type="submit" value="Post">
+                </div>
+
+            </form>
+        </div>
+    </div>

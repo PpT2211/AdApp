@@ -1,0 +1,31 @@
+<!-- This is the homes page. Changes you wanna apply to home page, can be done by modifying this. -->
+
+<% layout('layouts/boilerplate.ejs') %>
+    <h1>All Ads</h1>
+    <% if(ad.length==0){ %>
+        <h5>No ads to display :(</h5>
+        <% }else{ %>
+            <% for(let a of ad){ %>
+                <div class="card mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="<%= a.image %> " alt="" class="img-fluid">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= a.title %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= a.description %>
+                                </p>
+                                <p class="card-text"><small class="text-muted">
+                                        <%= a.location %>
+                                    </small></p>
+                                <a href="/ad/show/<%= a._id %>" class="btn btn-primary">View Ad</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+                    <% } %>

@@ -1,0 +1,42 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <button type="button" class="me-auto btn btn-dark" onclick="history.back()">Back</button>
+        </div>
+        <h1 class="text-center">Login</h1>
+        <br>
+        <div class="col-6 offset-3">
+
+            <form action="/login" novalidate class="needs-validation" method="post">
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Please tell us who you are
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Your account will need a password, dum dum.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <input class="btn btn-success" type="submit" value="Register">
+                </div>
+
+            </form>
+        </div>
+    </div>
