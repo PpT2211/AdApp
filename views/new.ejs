@@ -8,7 +8,7 @@
         <br>
         <div class="col-6 offset-3">
 
-            <form action="/ad/addAd" novalidate class="needs-validation" method="post">
+            <form action="/ad/addAd" novalidate class="needs-validation" method="post" enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -20,18 +20,15 @@
                         Please tell us what this is.
                     </div>
                 </div>
-
                 <div class="mb-3">
-                    <label for="image" class="form-label">Image url</label>
-                    <input type="text" class="form-control" name="image" id="image" placeholder="Image Url" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                    <div class="invalid-feedback">
-                        Please tell us how it looks.
+                    <div class="custom-file form-file">
+                        <label for="formFile" class="form-label">
+                            <span>Upload image(s):</span>
+                            <i><span class="custom-file-label"></span></i>
+                        </label>
+                        <input type="file" class="form-control custom-file-input" name="adPics" id="formFile" multiple>
                     </div>
                 </div>
-
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
                     <textarea type="text" class="form-control" name="description" id="description"

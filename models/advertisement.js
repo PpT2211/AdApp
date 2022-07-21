@@ -9,15 +9,23 @@ const Review = reviewModel.Review
 const User = userModel.User
 const Schema = mongoose.Schema
 
+
+const ImageSchema = new Schema({
+    url: String,
+    filename: String
+})
+
+ImageSchema.virtual('thumbnail').get(function(){
+    return this.url.replace('/upload','/upload/w_200')
+})
+
+// https://res.cloudinary.com/dqsiccxje/image/upload/v1658414516/AdApp/qybb0ahhngpp9awgut7h.jpg
 const adSchema = new Schema({
     title: {
         type: String,
         required: [true, 'Your parents gave you a name. You give your product a name']
     },
-    image: {
-        type: String,
-        required: [true, "How does your product look?"]
-    },
+    images: [ImageSchema],
     description: {
         type: String,
         required: [true, 'Who is your product?']

@@ -5,12 +5,13 @@ import wrapAsync from '../errorHandlers/asyncError.js'
 import validSchemas from "../validationSchemas.js"
 import middleware from "../middleware.js"
 import adController from '../controllers/adController.js'
+import cloudExport  from '../cloudinary/index.js'
 
 const require = createRequire(import.meta.url)
 
 const express = require('express')
 const flash = require('connect-flash')
-const session = require('express-session')
+const multer = require('multer')
 
 const Ad = models.Ad
 const AppError = errors.AppError
@@ -19,6 +20,8 @@ const isLoggedin = middleware.isLoggedin
 const validateAd = middleware.validateAd
 const isAuthor = middleware.isAuthor
 const adRouter = express.Router()
+const storage = cloudExport.storage
+const upload = multer({ storage })
 
 
 // home page basically. All Ads
@@ -29,8 +32,8 @@ adRouter.get('/allAds', wrapAsync(adController.index))
 
 adRouter.route('/addAd')
     .get(isLoggedin, wrapAsync(adController.renderNewForm))
-    .post(isLoggedin, validateAd, wrapAsync(adController.createAd))
-
+    .post(isLoggedin, upload.array('adPics'), validateAd, wrapAsync(adController.createAd))
+    
 // show a specific Ad
 
 adRouter.get('/show/:id', wrapAsync(adController.viewAd))
@@ -39,7 +42,7 @@ adRouter.get('/show/:id', wrapAsync(adController.viewAd))
 
 adRouter.route('/edit/:id')
     .get(isLoggedin, isAuthor, wrapAsync(adController.renderEditForm))
-    .put(isLoggedin, isAuthor, validateAd, wrapAsync(adController.editAd))
+    .put(isLoggedin, isAuthor, upload.array('adNewPics'), validateAd, wrapAsync(adController.editAd))
 
 // delete Ad
 

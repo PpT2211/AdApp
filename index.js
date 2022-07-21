@@ -12,6 +12,10 @@ import userRouter from "./routes/userRoutes.js"
 import reviewRouter from "./routes/reviewRoutes.js"
 const require = createRequire(import.meta.url)
 
+if(process.env.NODE_ENV !== "production"){
+    require('dotenv').config()
+}
+
 const express = require('express')
 const mongoose = require('mongoose')
 const methodOverride = require('method-override')
@@ -19,6 +23,7 @@ const morgan = require('morgan')
 const ejsMate = require('ejs-mate')
 const flash = require('connect-flash')
 const session = require('express-session')
+const multer = require('multer')
 const Ad = models.Ad
 const Review = reviewModel.Review
 const User = userModel.User
@@ -27,6 +32,7 @@ const adSchema = validSchemas.adSchema
 const reviewSchema = validSchemas.reviewSchema
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
+const upload = multer({ dest:'uploads/' })
 
 const app = express()
 const port = 3000

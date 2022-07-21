@@ -8,7 +8,7 @@
         <br>
         <div class="col-6 offset-3">
 
-            <form action="/ad/edit/<%= a._id %>?_method=PUT" method="post" novalidate class="needs-validation">
+            <form action="/ad/edit/<%= a._id %>?_method=PUT" method="post" novalidate class="needs-validation" enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -21,19 +21,15 @@
                         Please tell us what this is.
                     </div>
                 </div>
-
                 <div class="mb-3">
-                    <label for="image" class="form-label">Image url</label>
-                    <input type="text" class="form-control" name="image" id="image" placeholder="Image Url"
-                        value="<%= a.image %>" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                    <div class="invalid-feedback">
-                        Please tell us how it looks.
+                    <div class="custom-file form-file">
+                        <label for="formFile" class="form-label">
+                            <span>Upload image(s):</span>
+                            <i><span class="custom-file-label"></span></i>
+                        </label>
+                        <input type="file" class="form-control custom-file-input" name="adNewPics" id="formFile" multiple>
                     </div>
                 </div>
-
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
                     <textarea type="text" class="form-control" id="description" required name="description"
@@ -68,9 +64,17 @@
                         Please tell us where to buy this.
                     </div>
                 </div>
-
                 <div class="mb-3">
-                    <input class="btn btn-success" type="submit" value="Post">
+                    <% a.images.forEach((img,i)=>{ %> 
+                        <img src="<%= img.thumbnail %>" class="img-thumbnail" alt="">
+                        <div class="form-check-inline">
+                            <input type="checkbox" name="deleteImages[]" value="<%= img.filename %>" id="image-<%= i %>">
+                        </div>
+                        <label for="image-<%= i %>">Delete?</label>
+                    <% }) %> 
+                </div>
+                <div class="mb-3">
+                    <input class="btn btn-success" type="submit" value="Update">
                 </div>
 
             </form>
