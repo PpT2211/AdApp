@@ -17,7 +17,6 @@ const isLoggedin = (req,res,next) => {
     }else{
         url = url.replace('/reviews','')
         req.session.destination = `ad/${url.replace('/review','')}`
-
     }
     if(!req.isAuthenticated()){
         req.flash('error','You need to be signed in')
