@@ -7,7 +7,7 @@ class AppError extends Error {
 }
 
 const errors = {
-    AppError: AppError
+    AppError
 }
 
 export default errors

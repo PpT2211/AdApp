@@ -16,7 +16,7 @@ const reviewSchema = Joi.object({
 })
 
 const schemas = {
-    adSchema: adSchema,
-    reviewSchema: reviewSchema
+    adSchema,
+    reviewSchema
 }
 export default schemas

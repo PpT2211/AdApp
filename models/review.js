@@ -25,7 +25,7 @@ const reviewSchema = new Schema({
 const Review = mongoose.model('Reviews', reviewSchema)
 
 const reviewModel = {
-    Review: Review
+    Review
 }
 
 export default reviewModel

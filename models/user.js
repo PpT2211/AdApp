@@ -25,7 +25,7 @@ userSchema.plugin(passportLocalMongoose)
 const User = mongoose.model('Users', userSchema)
 
 const userModel = {
-    User: User
+    User
 }
 
 export default userModel

@@ -4,6 +4,8 @@ import errors from "../errorHandlers/error.js"
 import wrapAsync from '../errorHandlers/asyncError.js'
 import validSchemas from "../validationSchemas.js"
 import passport from 'passport'
+import authController from '../controllers/authController.js'
+
 const require = createRequire(import.meta.url)
 
 const express = require('express')
@@ -13,45 +15,20 @@ const userRouter = express.Router()
 
 var destinationUrl;
 
+// register new user
 
-userRouter.get("/register", (req,res)=>{
-    res.render("auth/register")
-})
+userRouter.route("/register")
+    .get(authController.renderRegistrationFrom)
+    .post(wrapAsync(authController.registerNewUser))
 
-userRouter.post("/register", wrapAsync(async (req,res, next)=>{
-    try {
-        const {username, email, age , password} = req.body
-        const user = new User({ email, age, username })
-        const newUser = await User.register(user, password)
-        req.login(newUser, err => {
-            if(err) return next(err)
-            req.flash('success','Welcome to AdApp!')
-            res.redirect("/ad/allAds")
-        })
-    } catch (e) {
-        req.flash('error',e.message)
-        res.redirect("/register")
-    }
-}))
+// login user
 
+userRouter.route("/login")
+    .get(authController.renderLoginForm)
+    .post(passport.authenticate('local',{ failureFlash: true, failureRedirect: '/login' }), authController.loginUser)
 
-userRouter.get("/login", (req,res)=>{
-    res.render("auth/login")
-    destinationUrl = req.session.destination || "/ad/allAds"
-})
+// logout user
 
-userRouter.post("/login", passport.authenticate('local',{ failureFlash: true, failureRedirect: '/login' }),(req,res)=>{
-    res.redirect(destinationUrl)
-})
-
-userRouter.get('/logout', (req, res) => {
-    req.logout(function(err){
-        if(err){ 
-            return next(err)
-        }
-        req.flash('success','Successfully logged out!')
-        res.redirect("/ad/allAds");
-    })
-})
+userRouter.get('/logout', authController.logoutUser)
 
 export default userRouter

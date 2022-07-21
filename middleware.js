@@ -62,11 +62,11 @@ const isReviewAuthor = async(req,res,next) => {
 }
 
 const middleware = {
-    isLoggedin: isLoggedin,
-    validateAd: validateAd,
-    isAuthor: isAuthor,
-    validateReview: validateReview,
-    isReviewAuthor: isReviewAuthor
+    isLoggedin,
+    validateAd,
+    isAuthor,
+    validateReview,
+    isReviewAuthor
 }
 
 export default middleware

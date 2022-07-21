@@ -55,7 +55,7 @@ adSchema.post('findOneAndDelete',async function (doc){
 const Ad = mongoose.model('Ad', adSchema)
 
 const models = {
-    Ad: Ad
+    Ad
 }
 
 

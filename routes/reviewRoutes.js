@@ -5,6 +5,7 @@ import errors from "../errorHandlers/error.js"
 import wrapAsync from "../errorHandlers/asyncError.js"
 import schemas from "../validationSchemas.js"
 import middleware from "../middleware.js"
+import reviewController from '../controllers/reviewController.js'
 
 const require = createRequire(import.meta.url)
 
@@ -21,29 +22,12 @@ const isReviewAuthor = middleware.isReviewAuthor
 const reviewRouter = express.Router()
 
 
-
 // show reviews
 
-reviewRouter.post('/show/:id/reviews', isLoggedin, validateReview, wrapAsync(async (req, res, next) => {
-    const id = req.params.id
-    const data = await Ad.findById(id)
-    const review = new Review(req.body.review)
-    review.author = req.user._id
-    data.reviews.push(review)
-    await review.save()
-    await data.save()
-    req.flash('success','Successfully added a review!')
-    res.redirect(`/ad/show/${id}`)
-}))
+reviewRouter.post('/show/:id/reviews', isLoggedin, validateReview, wrapAsync(reviewController.postReview))
 
 // delete review
 
-reviewRouter.delete('/show/:id/reviews/:reviewId', isReviewAuthor, wrapAsync(async(req,res,next)=>{
-    const { id, reviewId } = req.params
-    await Ad.findByIdAndUpdate(id, {$pull: { reviews: reviewId }})
-    await Review.findByIdAndDelete(reviewId)
-    req.flash('success','Successfully deleted a review!')
-    res.redirect(`/ad/show/${id}`)
-}))
+reviewRouter.delete('/show/:id/reviews/:reviewId', isReviewAuthor, wrapAsync(reviewController.deleteReview))
 
 export default reviewRouter
