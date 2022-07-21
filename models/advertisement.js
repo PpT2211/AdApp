@@ -1,7 +1,9 @@
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
 import reviewModel from './review.js'
 import userModel from './user.js'
+
+const require = createRequire(import.meta.url)
+
 const mongoose = require('mongoose')
 const Review = reviewModel.Review
 const User = userModel.User

@@ -14,17 +14,10 @@ const Ad = models.Ad
 const AppError = errors.AppError
 const adSchema = validSchemas.adSchema
 const isLoggedin = middleware.isLoggedin
+const validateAd = middleware.validateAd
+const isAuthor = middleware.isAuthor
 const adRouter = express.Router()
 
-const validateAd = (req, res, next) => {
-    const { error } = adSchema.validate(req.body)
-    if (error) {
-        const message = error.details.map(el => el.message).join(', ')
-        throw new AppError(400, message)
-    } else {
-        next()
-    }
-}
 
 // home page basically. All Ads
 
@@ -54,7 +47,12 @@ adRouter.post('/addAd', isLoggedin, validateAd, wrapAsync(async (req, res, next)
 // show a specific Ad
 
 adRouter.get('/show/:id', wrapAsync(async (req, res, next) => {
-    const data = await Ad.findById(req.params.id).populate('reviews').populate('author')
+    const data = await Ad.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author')
     if (!data) {
         req.flash('error','Cannot find the Ad you requested for')
         return res.redirect('/ad/allAds')
@@ -65,7 +63,7 @@ adRouter.get('/show/:id', wrapAsync(async (req, res, next) => {
 
 // edit/update a specific Ad
 
-adRouter.get('/edit/:id', isLoggedin, wrapAsync(async (req, res, next) => {
+adRouter.get('/edit/:id', isLoggedin, isAuthor, wrapAsync(async (req, res, next) => {
     const data = await Ad.findById(req.params.id)
     if (!data) {
         throw new AppError(404, "Data requested doesn't exist")
@@ -73,7 +71,7 @@ adRouter.get('/edit/:id', isLoggedin, wrapAsync(async (req, res, next) => {
     res.render('ads/edit', { a: data })
 }))
 
-adRouter.put('/edit/:id', isLoggedin, validateAd, wrapAsync(async (req, res, next) => {
+adRouter.put('/edit/:id', isLoggedin, isAuthor, validateAd, wrapAsync(async (req, res, next) => {
     const updatedData = req.body
     const data = await Ad.findByIdAndUpdate(req.params.id, updatedData, { runValidators: true, new: true })
     req.flash('success','Successfully updated an Ad!')
@@ -83,7 +81,7 @@ adRouter.put('/edit/:id', isLoggedin, validateAd, wrapAsync(async (req, res, nex
 
 // delete Ad
 
-adRouter.delete('/delete/:id', isLoggedin, wrapAsync(async (req, res, next) => {
+adRouter.delete('/delete/:id', isLoggedin, isAuthor, wrapAsync(async (req, res, next) => {
 
     const data = await Ad.findByIdAndDelete(req.params.id)
     if (!data) {
